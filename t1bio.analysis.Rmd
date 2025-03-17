@@ -1,0 +1,504 @@
+---
+title: Association of risk scores of known type 1 diabetes biomarkers in T1D patients with other common autoimmune diseases
+output:
+  bookdown::pdf_book:
+     latex_engine: xelatex
+     toc: true
+     toc_depth: 3
+     df_print: kable
+     citation_package: natbib
+     extra_dependencies: "subfig"
+urlcolor: blue
+linkcolor: red
+
+---
+
+
+
+```{r, include=FALSE}
+options(tinytex.verbose = TRUE)
+```
+
+```{r, include=FALSE}
+library(rmarkdown)
+library(knitr)
+library(kableExtra)
+library(tinytex)
+library(data.table)
+
+```
+
+
+# Introduction
+The aims of this analysis is to test for association of polygenic risk scores of known type 1 diabetes biomarkers in T1D diabetes patients with other common auto-immune diseases.
+
+
+# Methods
+The data for this study was obtained from type 1 bio-resources diabetes (type1bio) cohort.
+
+**Data Extraction**  
+To identify individuals with other autoimmune diseases in this cohort, four case ascertainment methods was deployed, they are the information on other auto-immune condition provided on their self-reported questionnaires, ICD codes on outpatient hospital discharge record, medication history of patients and records of outpatient specialty attendance. Self reported and hospital discharge cases were considered confirmed cases. The outpatient specialty record for these patients did not include their diagnosis record, hence, individuals were probed based on having at least two specialty attendance and having a trait-related medication history. Depending on the medication selected for each trait additional medication based criteria was further applied.
+
+Further, a general exclusion criteria was applied on the whole dataset, this includes removing individuals
+who have monogenic diabetes, those flagged as having neo-natal diabetes, those flagged as as possible type-2-diabetes based on an algorithm that considers insulin and t2d medication use. Those with C-peptide and no GAD/IA2/ZNT8 auto-antibodies were excluded as well. Due tho using genotype data for PRS computation related individuals with a 5% relatedness threshold were also excluded from the analysis.
+
+&nbsp;
+&nbsp;
+
+**Celiac cases ascertainment**  
+As medication for celiac disease is mostly gluten-free diet and the outpatient specialty attendance for our cohort does not include their diagnoses, only the self-reported questionnaires and hospital discharge records were used in ascertaining individuals with celiac disease. The case ascertainment step is shown in Fig \@ref(fig:cedtree), about 211 distinct T1D patients with celiac disease were obtained from the self-reported questionnaires and hospital discharge records, the general exclusion criteria applied to the whole cohort further reduced the sample to 179 celiac cases.
+
+```{r cedtree, out.width='85%', fig.align='center', fig.pos = '!h', fig.cap='Flowchart for Celiac disease case ascertainment', echo=FALSE}
+knitr::include_graphics('cedtree.png')
+```
+
+&nbsp;
+&nbsp;
+
+
+**Psoriasis case ascertainment**  
+For Psoriasis, the case ascertainment step is shown in Fig \@ref(fig:psrtree). 162 patients reported having Psoriasis on questionnaire while 47 people had psoriasis hospital discharge ICD codes. 
+Using medication history of the Type1bio cohort, we found that 219 patients were on at least one of the medications considered for Psoriasis treatment. The list of drugs considered for Psoriasis treatment is presented in Table \@ref(tab:table1). The drugs marked as “Yes” were searched in our cohort database and the drug history were obtained alongside the corresponding patient ID. To ensure that these medications were actually used for Psoriasis treatment in our cohort, we extracted the percentage of self-reported and hospital discharge cases on each medication which is also shown in Fig \@ref(fig:psrtree).
+
+```{r psrtree, out.width='85%', fig.align='center', fig.pos = '!h', fig.cap='Flowchart for Psoriasis case ascertainment', echo=FALSE}
+knitr::include_graphics('psrtree.png')
+```
+
+Overall, 1357 patients had at least two Dermatology outpatient attendance record while 486 had at least two Rheumatology outpatient record. For each of the specialty record, the data were filtered to patients who were on any of the listed psoriasis medication giving a total of 115 patients for the Dermatology specialty and 46 for Rheumatology specialty. In all, there were 128 individual who attended either of the two specialties two or more times and are on psoriasis medication. A total of 245 distinct individuals were found to have psoriasis, further exclusion criteria applied to the whole cohort resulted in about 193 psoriasis cases.
+
+```{r, include=FALSE}
+############################################# Table 1
+load("table1.RData")
+```
+
+```{r table1, echo=FALSE}
+opts <- options(knitr.kable.NA = "-")
+kable(table1, format="latex",booktabs = T, align = "lccc", caption = '\\textbf{Medication considered for Psoriasis}') %>% 
+  row_spec(0,bold=TRUE) %>% 
+  kable_styling(font_size = 10,full_width = TRUE) %>%
+  column_spec(c(1,3), width = "8em")  
+```
+
+
+&nbsp;
+&nbsp;
+
+**Inflammatory bowel disease case ascertainment**  
+Fig \@ref(fig:ibdtree) shows the case ascertainment steps for IBD. 115 individuals self-reported IBD while 76 had IBD hospital discharge ICD codes. 480 subjects were on at least one of the medications considered for IBD treatment (Table \@ref(tab:table2)). The drugs marked "Yes" were used in IBD case ascertainment. The percentage of each drug taken by the self-reported and hospital discharge patients is also shown in Fig \@ref(fig:ibdtree).
+
+```{r ibdtree, out.width='85%', fig.align='center', fig.pos = '!h', fig.cap='Flowchart for IBD case ascertainment', echo=FALSE}
+knitr::include_graphics('ibdtree.png')
+```
+
+1082 patients attended Gastroenterology specialty more than once, out of these 1082 patients, 200 were taking the selected IBD medication. As some of the drugs used in extracting IBD cases are also taken by Rheumatoid arthritis (RA), Lupus, Psoriasis(PS) and Eczema patients we performed additional medication checks for these 200 individuals which included excluding people who are self-reported/hospital discharge RA or PS patients or those who have been to the Rheumatology or Dermatology specialty more than once. This led to the exclusion of 94 individuals with about 106 remaining, joining these individuals distinctively to the self-reported and hospital discharge cases gave a total of 225 IBD patients in our diabetes cohort. 187 IBD cases remained after applying the general exclusion criteria on the whole cohort.
+
+```{r, include=FALSE}
+############################################# Table 2
+load("table2.RData")
+```
+
+```{r table2, echo=FALSE}
+opts <- options(knitr.kable.NA = "-")
+kable(table2,format="latex",booktabs = T, align = "lccc", caption = '\\textbf{Medication considered for IBD}') %>% 
+  row_spec(0,bold=TRUE) %>% 
+  kable_styling(position = "center",
+                font_size = 10,full_width = TRUE) %>%
+  column_spec(c(1,3), width = "8em")  
+```
+
+
+&nbsp;
+&nbsp;
+
+**Rheumatoid arthritis case ascertainment**  
+183 individuals self-reported RA while 102 had RA hospital discharge ICD codes. 225 subjects were on at least one of the medications considered for RA treatment (Table \@ref(tab:table3)). 486 individuals had more than one rheumatology specialty attendance record. Intersecting medication and rheumatology record indicated that 201 individuals were on at least one of the selected RA medications and attended the rheumatology specialty more than once (Fig \@ref(fig:ratree))
+
+```{r ratree, out.width='85%', fig.align='center', fig.pos = '!h', fig.cap='Flowchart for Rheumatoid arthritis case ascertainment', echo=FALSE}
+knitr::include_graphics('ratree.png')
+```
+
+As leflunomide, methotrexate and sulfasalazine are also taken by people with other disorders listed in Table \@ref(tab:table3), so out of the 201 individuals, we excluded 97 individuals who either attended Gastroenterology or Dermatology specialty more than once, or self-reported psoriasis/hospital discharge or IBD. 104 individuals were left, the next exclusion criteria considered people who took only hydroxychloroquine or only methotrexate or have a record of only both of the drugs as they may be having either lupus or RA. 20 individuals were remaining after exclusion, joining these individuals distinctively to the self-reported and hospital discharge cases gave a total of 231 RA patients in our diabetes cohort.
+Further exclusion criteria applied to the whole cohort resulted in about 184 RA cases.
+
+```{r, include=FALSE}
+############################################# Table 3
+load("table3.RData")
+```
+
+```{r table3, echo=FALSE}
+opts <- options(knitr.kable.NA = "-")
+kable(table3, format="latex",booktabs = T, align = "lccc", caption = '\\textbf{Medication considered for Rheumatoid}') %>% 
+  row_spec(0,bold=TRUE) %>% 
+  kable_styling(latex_options = c("hold_position"),position = "center",
+                font_size = 10,full_width = TRUE) %>%
+  column_spec(c(1,3), width = "8em")   
+```
+
+&nbsp;
+&nbsp;
+
+**Hypothyroidism case ascertainment**  
+About 825 individuals self-reported thyroid disease, however we note that this is recorded as "Thyroid disease" in the questionnaire hence no clear distinction as to which of the thyroid disease, therefore we only considered the self-reported cases if they had levothyroxine hormone replacement therapy. Out of the 825 self-reported thyroid disease cases, 793 were on levothyroxine. Likewise, 12 individuals had Hypothyroidism ICD codes on hospital discharge records, only 9 of who were on levothyroxine were included for further analysis. Querying the database for individuals who had levothyroxine and attended the endocrinology outpatient specialty produced a total of 950 individuals, joining them distinctively to the self-reported and hospital discharge medication filtered cases gave a total of 1110 hypothyroidism patients. 915 hypothyroidism cases were remaining after applying the cohort based exclusion criteria (Fig \@ref(fig:htdtree)).
+
+```{r htdtree, out.width='85%', fig.align='center', fig.pos = '!h', fig.cap='Flowchart for Hypothyroidism case ascertainment', echo=FALSE}
+knitr::include_graphics('htdtree.png')
+```
+
+&nbsp;
+&nbsp;
+
+**Pernicious anaemia case ascertainment**  
+61 individuals self-reported pernicious anaemia while 42 had related hospital discharge ICD codes. Pernicious anaemia is treated with Vitamin B12 replacement therapy which are Hydroxocobalamin and Cyanocobalamin. 341 individuals were on at least one of these medications, out of which 114 subjects attended Gastroenterology or Haematology specialty (Fig \@ref(fig:patree)). Joining these individuals distinctively with the self-reported and hospital discharge cohorts, a total of 167 distinct subjects were found to have pernicious anaemia, further cohort based exclusion criteria resulted in about 121 pernicious anaemia cases.
+
+```{r patree, out.width='85%', fig.align='center', fig.pos = '!h', fig.cap='Flowchart for Pernicious anaemia  case ascertainment', echo=FALSE}
+knitr::include_graphics('patree.png')
+```
+
+&nbsp;
+&nbsp;
+
+**Type 1 diabetes biomarkers**  
+  The type 1 diabetes biomarkers used in this study were obtained from @reference Andrii's paper. Nine trait-relevant genes obtained from association of T1D with aggregated trans-eqtl scores while fourteen trait-relevant genes were obtained for the aggregated trans-pqtl scores. The genes obtained for trans-eqtl analysis are as follows; *CD247, CD1E, CTLA4, CD5, IL10RA, MEOX1, LGALS3BP, FOXP3,* and *STAT1.* Those obtained for trans-pqtl are *CCL15, CXCL9, EIF4G3, ICAM2, LAG3, LIN7B, CCL19, CRTAM, NCR1, CD5L, CD48, BPIFA2, FCGR3B*, and *GCG.*
+
+&nbsp;
+&nbsp;
+
+**Statistical analysis**  
+Descriptive statistics for the categorical sample characteristics for each trait were obtained as frequencies and percentages, while the mean and standard deviation were obtained for continuous sample characteristics. For each disease category, the individuals extracted in the case ascertainment steps were used as cases while the rest were used as controls. The t.test and chi-square test was used to test the differences in mean and categories of the sample characteristics.The logistic regression model was used to test association of these biomarker scores with other auto-immune disease in patients with T1D.
+
+&nbsp;
+&nbsp;
+
+
+
+
+\newpage
+
+# Results
+A summary table for data extraction is presented in Table \@ref(tab:table4). The Medication and specialty>1 column denotes the number of cases obtained by filtering those on trait related medication by more than one specialty attendance record while the medication based exclusion denotes the number of cases left after additional additional medication filtering as described earlier. Distinctive cases column shows the total number of cases obtained by distinctively joining the self-reported, hospital discharge cases and medication-specialty>1 or medication based exclusion filtered cases. This is slightly different for Hypothyroidism as we only included self-reported and hospital discharge cases that were on Hypothyroidism medication. The last column shows the number of cases obtained after applying the general exclusion criteria on the whole cohort. Fig \@ref(fig:venndiagrams) shows the number of cases overlapping for each case ascertainment method for all the selected traits.
+
+```{r, include=FALSE}
+############################################# Table 4
+load("table4.RData")
+```
+
+```{r table4, echo=FALSE}
+opts <- options(knitr.kable.NA = "-")
+kable(table4, format="latex",booktabs = T, align = "lccc", caption = '\\textbf{Summary table of number cases for each trait}') %>% 
+  row_spec(0,bold=TRUE) %>% 
+  kable_styling(latex_options = c("hold_position"),position = "center",
+                font_size = 10,full_width = TRUE) 
+```
+
+
+```{r venndiagrams, out.width='50%', fig.asp=1, fig.ncol = 2,  fig.cap ='Venn diagram of cases ascertainment for the selected autoimmune conditions', fig.subcap=c('Celiac', 'Psoriasis', 'Inflammatory bowel disease', 'Rheumatoid arthritis','Hypothyroidism','Pernicious anaemia'), echo=FALSE}
+knitr::include_graphics('ced.vennshot.png')
+knitr::include_graphics('ps.vennshot.png')
+knitr::include_graphics('ibd.vennshot.png')
+knitr::include_graphics('ra.vennshot.png')
+knitr::include_graphics('htd.vennshot.png')
+knitr::include_graphics('pa.vennshot.png')
+```
+
+&nbsp;
+&nbsp;
+
+**Celiac disease**  
+For celiac disease, the sample characteristics table is presented in Table \@ref(tab:table5). The test p-values for differences in means of the continuous characteristics and groups in the continuous categories is shown in the table as well. Sex and BMI were significantly associated with celiac disease. None of the genes for the eQTL aggregated trans-scores were nominally significant (Table \@ref(tab:table6a)). The *CD5L* gene was nominally significant in the pQTL aggregated trans-scores analysis, however it did not reach the bonferroni corrected threshold (Table \@ref(tab:table6b)).
+
+
+```{r, include=FALSE}
+############################################# Table 5
+load("table5.RData")
+```
+
+```{r table5, echo=FALSE}
+opts <- options(knitr.kable.NA = "-")
+kable(table5,format="latex",booktabs = T, align = "rcc", caption = '\\textbf{Sample characteristics for Celiac disease}') %>% row_spec(0,bold=TRUE) %>%
+  kable_styling(latex_options = c("hold_position"),position = "center",font_size = 10)
+```
+
+
+```{r, include=FALSE}
+############################################# Table 6a
+load("table6a.RData")
+```
+
+```{r table6a, echo=FALSE}
+opts <- options(knitr.kable.NA = "-")
+kable(table6a, format="latex",booktabs = T, align = "lccc", caption = '\\textbf{eQTL scores analysis for Celiac disease}') %>% row_spec(0,bold=TRUE) %>% column_spec(1,italic = TRUE) %>%
+  kable_styling(latex_options = c("hold_position"),position = "center",font_size = 10, full_width = F)
+```
+
+```{r, include=FALSE}
+############################################# Table 6b
+load("table6b.RData")
+```
+
+```{r table6b, echo=FALSE}
+opts <- options(knitr.kable.NA = "-")
+kable(table6b, format="latex",booktabs = T, align = "lccc", caption = '\\textbf{pQTL scores analysis for Celiac disease}') %>% row_spec(0,bold=TRUE) %>% column_spec(1,italic = TRUE) %>%
+  kable_styling(latex_options = c("hold_position"),position = "center",font_size = 10, full_width = F)
+```
+
+
+
+&nbsp;
+&nbsp;
+
+
+**Psoriasis**   
+A total of 193 cases and 4765 controls were used in the analysis  (Table \@ref(tab:table7)). The sample characteristics table is presented in Table \@ref(tab:table7). Sex, age and CVD were significantly different in the two groups. The scores analysis for eQTL and pQTL genes is presented in Table \@ref(tab:table8a) and Table \@ref(tab:table8b), none of the genes appeared significant. 
+
+
+```{r, include=FALSE}
+############################################# Table 7
+load("table7.RData")
+```
+
+```{r table7, echo=FALSE}
+opts <- options(knitr.kable.NA = "-")
+kable(table7, format="latex",booktabs = T, align = "rcc", caption = '\\textbf{Sample characteristics for Psoriasis}') %>% row_spec(0, bold=TRUE) %>% 
+  kable_styling(latex_options = c("hold_position"),position = "center",font_size = 10)
+```
+
+
+```{r, include=FALSE}
+############################################# Table 8a
+load("table8a.RData")
+```
+
+```{r table8a, echo=FALSE}
+opts <- options(knitr.kable.NA = "-")
+kable(table8a, format="latex",booktabs = T, align = "lccc", caption = '\\textbf{eQTL scores analysis for Psoriasis}') %>% row_spec(0,bold=TRUE) %>% column_spec(1,italic = TRUE) %>%
+  kable_styling(latex_options = c("hold_position"),position = "center",font_size = 10, full_width = F)
+```
+
+```{r, include=FALSE}
+############################################# Table 8b
+load("table8b.RData")
+```
+
+```{r table8b, echo=FALSE}
+opts <- options(knitr.kable.NA = "-")
+kable(table8b, format="latex",booktabs = T, align = "lccc", caption = '\\textbf{pQTL scores analysis for Psoriasis}') %>% row_spec(0,bold=TRUE) %>% column_spec(1,italic = TRUE) %>%
+  kable_styling(latex_options = c("hold_position"),position = "center",font_size = 10)
+```
+
+
+&nbsp;
+&nbsp;
+
+
+
+**Inflammatory bowel disease**  
+  
+187 confirmed IBD cases abd 4771 controls were used for the analysis. Sex and CVD were significantly different in the two groups (Table \@ref(tab:table9)). None of the genes in both eQTL and pQTL scores analysis reached bonferroni corrected thresholds however a couple of them were nominally significant (Table \@ref(tab:table10a), Table \@ref(tab:table10b)). 
+
+```{r, include=FALSE}
+############################################# Table 9
+load("table9.RData")
+```
+
+```{r table9, echo=FALSE}
+opts <- options(knitr.kable.NA = "-")
+kable(table9, format="latex",booktabs = T, align = "rcc", caption = '\\textbf{Sample characteristics for Inflammatory bowel disease}') %>% row_spec(0, bold=TRUE) %>%
+  kable_styling(latex_options = c("hold_position"),position = "center",font_size = 10)
+```
+
+
+```{r, include=FALSE}
+############################################# Table 10a
+load("table10a.RData")
+```
+
+```{r table10a, echo=FALSE}
+opts <- options(knitr.kable.NA = "-")
+kable(table10a, format="latex",booktabs = T, align = "lccc", caption = '\\textbf{eQTL scores analysis for Inflammatory bowel disease}') %>% row_spec(0,bold=TRUE) %>% column_spec(1,italic = TRUE) %>%
+  kable_styling(latex_options = c("hold_position"),position = "center",font_size = 10)
+```
+
+```{r, include=FALSE}
+############################################# Table 10b
+load("table10b.RData")
+```
+
+```{r table10b, echo=FALSE}
+opts <- options(knitr.kable.NA = "-")
+kable(table10b, format="latex",booktabs = T, align = "lccc", caption = '\\textbf{pQTL scores analysis for Inflammatory bowel disease}') %>% row_spec(0,bold=TRUE) %>% column_spec(1,italic = TRUE) %>%
+  kable_styling(latex_options = c("hold_position"),position = "center",font_size = 10)
+```
+
+
+&nbsp;
+&nbsp;
+
+**Rheumatoid arthritis**  
+For Rheumatoid arthritis, 184 cases and 4774 controls remained after filtering by the established criterias. Sex, age, BMI and CVD were significantly different in the two groups(Table \@ref(tab:table11)). None of the genes for the eQTL scores were significant (Table \@ref(tab:table12a)). Two genes were nominally significant in the pQTL scores analysis (Table \@ref(tab:table12b)).
+
+```{r, include=FALSE}
+############################################# Table 11
+load("table11.RData")
+```
+
+```{r table11, echo=FALSE}
+opts <- options(knitr.kable.NA = "-")
+kable(table11, format="latex",booktabs = T, align = "rcc", caption = '\\textbf{Sample characteristics for Rheumatoid arthritis}') %>% row_spec(0, bold=TRUE) %>% 
+  kable_styling(latex_options = c("hold_position"),position = "center",font_size = 10)
+```
+
+
+```{r, include=FALSE}
+############################################# Table 12a
+load("table12a.RData")
+```
+
+```{r table12a, echo=FALSE}
+opts <- options(knitr.kable.NA = "-")
+kable(table12a, format="latex",booktabs = T, align = "lccc", caption = '\\textbf{eQTL scores analysis for Rheumatoid arthritis}') %>% row_spec(0,bold=TRUE) %>% column_spec(1,italic = TRUE) %>%
+  kable_styling(latex_options = c("hold_position"),position = "center",font_size = 10)
+```
+
+```{r, include=FALSE}
+############################################# Table 12b
+load("table12b.RData")
+```
+
+```{r table12b, echo=FALSE}
+opts <- options(knitr.kable.NA = "-")
+kable(table12b, format="latex",booktabs = T, align = "lccc", caption = '\\textbf{pQTL scores analysis for Rheumatoid arthritis}') %>% row_spec(0,bold=TRUE) %>% column_spec(1,italic = TRUE) %>%
+  kable_styling(latex_options = c("hold_position"),position = "center",font_size = 10)
+```
+
+
+&nbsp;
+&nbsp;
+
+**Hypothyroidism**  
+915 T1D cases with Hypothyroidism and 4043 T1D controls were used in the analysis. Sex, age, c-peptide levels and duration of diabetes were significantly different in the two groups (Table \@ref(tab:table13)). *CD5, FOXP3, LGALS3BP, CD247* and *STAT1* gene were all statistically significant in the eQTL scores analysis (Table \@ref(tab:table14a)) while *CRTAM, CCL19* and *CD5L* were significant in the pQTL scores analysis (Table \@ref(tab:table14b))
+*CD247* has been reported in Hypothyroidism GWAS, while *CD, STAT*, and *FOX* gene family members have been reported in Hypothyroidism GWASes as well. *CD5* has been reported in thyroid immunological studies while *FOXP3* is reported in risk of Hashimoto’s thyroiditis in a SNP based study. Expression of *CD5L, CRTAM* and *LGALS3BP* genes have been studied in thyroid cancer.
+
+```{r, include=FALSE}
+############################################# Table 13
+load("table13.RData")
+```
+
+```{r table13, echo=FALSE}
+opts <- options(knitr.kable.NA = "-")
+kable(table13, format="latex",booktabs = T, align = "rcc", caption = '\\textbf{Sample characteristics for Hypothyroidism}') %>% row_spec(0, bold=TRUE) %>% 
+  kable_styling(latex_options = c("hold_position"),position = "center",font_size = 10)
+```
+
+```{r, include=FALSE}
+############################################# Table 14a
+load("table14a.RData")
+```
+
+```{r table14a, echo=FALSE}
+opts <- options(knitr.kable.NA = "-")
+kable(table14a, format="latex",booktabs = T, align = "lccc", caption = '\\textbf{eQTL scores analysis for Hypothyroidism}') %>% row_spec(0,bold=TRUE) %>% column_spec(1,italic = TRUE) %>%
+  kable_styling(latex_options = c("hold_position"),position = "center",font_size = 10)
+```
+
+```{r, include=FALSE}
+############################################# Table 14b
+load("table14b.RData")
+```
+
+```{r table14b, echo=FALSE}
+opts <- options(knitr.kable.NA = "-")
+kable(table14b, format="latex",booktabs = T, align = "lccc", caption = '\\textbf{pQTL scores analysis for Hypothyroidism}') %>% row_spec(0,bold=TRUE) %>% column_spec(1,italic = TRUE) %>%
+  kable_styling(latex_options = c("hold_position"),font_size = 10)
+```
+
+
+&nbsp;
+&nbsp;
+
+
+**Pernicious anaemia**  
+There were 121 T1D cases with Pernicious anaemia and 4765 T1D controls were used in the analysis. Sex, age, C-peptide level, duration of T1D, age of onset of T1D and CVD risk were significantly different in the two groups (Table \@ref(tab:table15)). *CD5, FOXP3*, and *CD247* gene were all statistically significant in the eQTL scores analysis (Table \@ref(tab:table16a)) while only *CCL15* was significant in the pQTL scores analysis (Table \@ref(tab:table16b)).
+
+```{r, include=FALSE}
+############################################# Table 15
+load("table15.RData")
+```
+
+```{r table15, echo=FALSE}
+opts <- options(knitr.kable.NA = "-")
+kable(table15, format="latex",booktabs = T, align = "rcc", caption = '\\textbf{Sample characteristics for Pernicious anaemia}') %>% row_spec(0, bold=TRUE) %>%
+  kable_styling(latex_options = c("hold_position"),position = "center",font_size = 10)
+```
+
+```{r, include=FALSE}
+############################################# Table 16a
+load("table16a.RData")
+```
+
+```{r table16a, echo=FALSE}
+opts <- options(knitr.kable.NA = "-")
+kable(table16a, format="latex",booktabs = T, align = "lccc", caption = '\\textbf{eQTL scores analysis for Pernicious anaemia}') %>% row_spec(0,bold=TRUE) %>% column_spec(1,italic = TRUE) %>%
+  kable_styling(latex_options = c("hold_position"),position = "center",font_size = 10)
+```
+
+```{r, include=FALSE}
+############################################# Table 16b
+load("table16b.RData")
+```
+
+```{r table16b, echo=FALSE}
+opts <- options(knitr.kable.NA = "-")
+kable(table16b, format="latex",booktabs = T, align = "lccc", caption = '\\textbf{pQTL scores analysis for Pernicious anaemia}') %>% row_spec(0,bold=TRUE) %>% column_spec(1,italic = TRUE) %>%
+  kable_styling(latex_options = c("hold_position"),font_size = 10)
+```
+
+
+&nbsp;
+&nbsp;
+
+
+**Adjusting T1D age of onset**  
+This additional age of onset analysis corrects the ascertainment bias, where most studies of T1D and other autoimmune traits had shown that as age of onset of T1D increases the risk of other autoimmune trait increases. This is to say that people with late onset of diabetes tend to have more autoimmune or are at risk of having other autoimmune condition. However, we also know that generally the risk of multiple autoimmune disease increases with age. Most studies of other autoimmune conditions in T1D patients did not take into account the likely time of onset of these other autoimmune trait when investigating the age of onset of T1D in TID patients with and without other autoimmune conditions. Thus, if an older person is included in the study it is more likely the individual would have had time to have other autoimmune disease, these introduces some form of ascertainment bias where the younger people are in the study, the less likely they are to have had other autoimmune conditions.
+Therefore, we control for possible age of onset of these other autoimmune condition or age at which we know their last autoimmune disease status for cases and controls, and then see if the age of onset of T1D is younger for those who reported celiac on study day for instance. This adjustment removes the effect of age differences of our cohort from our model. 
+
+For celiac, there are no specific medication other than having gluten-free diet which we do not have any records on, therefore we adjust both cases and controls by their age on study recruitment date which is the last time we know those that had celiac and those who had not gone on to develop celiac. For psoriasis, IBD, rheumatoid, hypothyroidism and pernicious anaemia, ideally, we would adjust by likely age at onset of these traits estimated through their prescription record as age when they started taking the trait-related medication; and for controls, we would adjust by age at last prescription follow-up because that is the age at which we are sure they have not had the disease, since they are likely to potentially go on and develop the disease. However, the cases extracted for this analysis consist of those that are self-reported, have ICD codes and Meds*specialty. Some self-reported for instance do not have medication record neither do some hospital discharge cases have one as well (see Fig \@ref(fig:venndiagrams)), thus we are not able to get the likely age at onset of these traits by age at the start of trait-related medication. Thus, we use age at last prescription follow-up to adjust for both cases and controls. Overall, age of onset of T1D cohorts for celiac disease analysis was adjusted for by the study recruitment date and the date of last prescription follow-up in the rest of the traits for both cases and controls. 
+
+```{r, include=FALSE}
+############################################# Table 4
+load("table17.RData")
+```
+
+```{r table17, echo=FALSE}
+opts <- options(knitr.kable.NA = "-")
+kable(table17, format="latex",booktabs = T, align = "lcccc", caption = '\\textbf{Adjusted age of onset analysis for each trait}') %>% 
+  row_spec(0,bold=TRUE) %>% 
+  kable_styling(latex_options = c("hold_position"),position = "center",
+                font_size = 10,full_width = TRUE) 
+```
+
+The result of the adjusted age of onset analysis is presented in Table \@ref(tab:table17). For both unadjusted and adjusted analysis of T1D age of onset in individuals with celiac and those without celiac disease, the result was statistically significant. Thus, as age of T1D onset increases, the odds of celiac decreases by 1.5%, meaning people with earlier onset of T1D are more likely to have celiac. The first row for celiac was adjusted by age of subjects at study recruitment date while the second celiac analysis was adjusted by age at last prescription follow-up just as other traits. The result for psoriasis and IBD was not significant for both adjusted and unadjusted analysis. The result for rheumatoid and hypothyroidism were non significant for the unadjusted analysis and became significant after adjustment by age at last prescription follow-up. As age of T1D onset increases, the odds of rheumatoid decreases by 2%, also meaning that people with earlier onset of T1D are more likely to have rheumatoid. Likewise, as the age of T1D onset increases, the odds of hypothyroidism decreases by 1.7%, so that people with earlier onset of T1D are more likely to have hypothyroidism compared to people with late onset T1D. The unadjusted analysis for pernicious anaemia was highly significant but became non-significant after adjustment.
+
+&nbsp;
+&nbsp;
+
+
+**Predicting age of onset and C-peptide levels using predicted values of the most predictive core genes in hypothyroidism**  
+For the analysis conducted for these other autoimmune conditions in our T1D cohort, only hypothyroidism with the highest sample size and pernicious anaemia showed significant association with the core genes. Since the scores for these significant core genes are strongly associated with hypothyroidism we believe they may contain information for discrimination between patients with T1D. Therefore, using the significant hypothyroidism core genes, we sought to investigate if these genes can be used to stratify patients with T1D. 
+
+Step-wise regression was applied to obtain the most predictive core genes for hypothyroidism, and then the predicted gene expression values obtained from the regression model of hypothyroidism using the most predictive core genes as predictors were used to predict c-peptide and age of onset of T1D cases in a linear regression model.
+
+```{r, include=FALSE}
+############################################# Table 4
+load("table18.RData")
+```
+
+```{r table18, echo=FALSE}
+opts <- options(knitr.kable.NA = "-")
+kable(table18, format="latex",booktabs = T, align = "rcc", caption = '\\textbf{Predicting age of onset and C-peptide levels using predicted values of the most predictive core genes in hypothyroidism}') %>%
+  row_spec(0,bold=TRUE) %>% column_spec(1,italic = TRUE) %>%
+  kable_styling(latex_options = c("hold_position"),position = "center",
+                font_size = 10,full_width = TRUE) 
+```
+
+The result of the analysis for predicting age of onset of T1D and c-peptide levels using predicted gene expression values of the most predictive core genes is presented in Table \@ref(tab:table18).
+*LGALS3BP, FOXP3* and *STAT1* were the most predictive core genes for hypothyroidism in the eQTL scores analysis while *CCL19, CRTAM, CD5L, LAG3* and *GCG* were the most predictive ones in pQTL scores analysis. None of the analysis showed significant association with age of onset of T1D and c-peptide levels.
